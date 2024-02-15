@@ -1,0 +1,194 @@
+<!doctype html>
+<html>
+<head>
+    <link rel="stylesheet" href="./stylesheet.css">
+    <script src="./api.js"></script>
+    <script src="./locales.js"></script>
+    <script src="./inline-help.js"></script>
+    <link rel="shortcut icon" type="image/png" href="https://discover.fluidtopics.com/public/favicon-96x96.png">
+    <title>FT ITG - Inline help</title>
+</head>
+<body>
+<div style="color:darkgrey;margin:3px 3px 3px 10px;">Inline help</div>
+<header>
+    <img src="./logo.png">
+    <div class="form-title">Sonic Screwdriver Parts Catalog</div>
+    <select id="languages"></select>
+</header>
+<div class="content">
+    <div class="help scroller">
+        <div id="description">
+            <!-- Will be filled with the API-->
+        </div>
+    </div>
+
+    <form action="javascript:;">
+        <h2> Order your own sonic screwdriver</h2>
+
+        <div class="category">
+            <label>Type</label>
+            <div class="help-tip" id="typs">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="radio" id="typeA" name="mark_type" value="A">
+                <label for="typeA">MarkVI</label>
+            </div>
+            <div class="help-tip" id="m-VI">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="radio" id="typeB" name="mark_type" value="B">
+                <label for="typeB">MarkVII</label>
+            </div>
+            <div class="help-tip" id="m-VII">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="radio" id="typeC" name="mark_type" value="C">
+                <label for="typeC">MarkVII</label>
+            </div>
+            <div class="help-tip" id="m-VIII">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="category">
+            <label>Required features</label>
+        </div>
+        <div class="option">
+            <div>
+                <input type="checkbox" id="security" name="security" value="security">
+                <label for="security"> Security</label>
+            </div>
+            <div class="help-tip" id="f-sec">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="checkbox" id="medical" name="medical" value="medical">
+                <label for="medical"> Medical</label>
+            </div>
+            <div class="help-tip" id="f-med">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="checkbox" id="diagnostic" name="diagnostic" value="diagnostic">
+                <label for="diagnostic"> Diagnostic</label>
+            </div>
+            <div class="help-tip" id="f-dia">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="checkbox" id="technology" name="technology" value="technology">
+                <label for="technology"> Technology</label>
+            </div>
+
+            <div class="help-tip" id="f-tec">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="category">
+            <label for="color">Gem color</label><br>
+            <div class="help-tip" id="c-col">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <input type="color" id="color" name="favcolor">
+        <div class="category">
+            <label for="engraving">Engraving</label>
+
+            <div class="help-tip" id="c-eng">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="indication">(max 50 char.)</div>
+        <input type="text" id="engraving" name="engraving">
+        <div class="category">
+            <label>Grip material</label>
+            <div class="help-tip" id="c-grp">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+
+        <div class="option">
+            <div>
+                <input type="radio" id="wood" name="grip_type" value="wood">
+                <label for="wood">Wood</label>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="radio" id="copper" name="grip_type" value="copper">
+                <label for="copper">Copper</label>
+            </div>
+        </div>
+        <div class="option">
+            <div>
+                <input type="radio" id="titanium" name="grip_type" value="titanium">
+                <label for="titanium">Titanium</label>
+            </div>
+        </div>
+        <div class="category">
+            <label for="vol">Temporal dilation</label>
+            <div class="help-tip" id="c-tmp">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div class="indication">(in femtoseconds per million years at 500 mm)</div>
+        <br>
+
+        <input type="range" id="vol" name="vol" min="0" max="50"><br>
+        <div class="category">
+            <label for="modulator">Psycho-mechanical modulator</label>
+            <div class="help-tip" id="c-pmm">
+                <div class="help-content">
+                    <!-- Will be filled with the API-->
+                </div>
+            </div>
+        </div>
+        <div id="modulator">
+            <label for="min">Min</label>
+            <input type="number" id="min" name="min" min="5" max="200">
+            <label for="max">Max</label>
+            <input type="number" id="max" name="min" min="5" max="200">
+        </div>
+        <input type="submit">
+    </form>
+</div>
+</body>
+</html>
