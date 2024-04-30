@@ -1,24 +1,4 @@
-<!doctype html>
-<html>
-    <head>
-        <link rel="stylesheet" href="./stylesheet.css">
-        <script src="./homepage.js"></script>
-        <script src="./suggest.js"></script>
-	<link rel="shortcut icon" type="image/png" href="https://discover.fluidtopics.com/public/favicon-96x96.png">
-	<title>FT ITG - Home Page with Suggest</title>
-    </head>
-    <body>
-      <div style="color:darkgrey;margin:3px 3px 3px 10px;">Home page with suggest</div>
-        <header class="search-section">
-            <img src="./logo.png">
-            <form class="search-wrapper" id="search-form" action="javascript:;"><!--We use the form to catch the submit event only, hence no specific target needed (action="javascript:void(0);" == action="javascript:;")-->
-                <input type="search" id="search-input" autocomplete="off" autocapitalize="off" autocorrect="off" placeholder="Search here (e.g. Fluid Topics)" list="json-datalist">
-                <button type="submit">Search</button>
-		<!--Here take place the suggestions-->
-		<datalist id="json-datalist"></datalist>
-            </form>
-        </header>
-    </body>
-</html>
-
-    
+<div class="container">
+    <input type="text" id="searchInput" placeholder="Type your search...">
+    <ul id="searchResults"></ul>
+</div>

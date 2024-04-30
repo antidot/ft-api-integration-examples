@@ -1,61 +1,59 @@
-/*=====
-Suggest
-======*/
+const searchInput = document.getElementById('searchInput');
+const searchResults = document.getElementById('searchResults');
 
-window.addEventListener("load", function(){
-    var suggestInput = document.getElementById('search-input');
-    // Add a keyup event listener to the input element
-    suggestInput.addEventListener('keyup', function(event){
-	getSuggestions(event)
-    });
-});
+const noSuggestionsMessage = "No suggestions found, try another query.";
+const contentLang = "en-US";
+const Version_FT = "Version_FT";
+const Version_FT_value = "Latest";
 
-function getSuggestions(event){
-    // Get the <datalist> and <input> elements.
-    var suggestionsList = document.getElementById('json-datalist');
-    
-    //arbitrary number of min chars to trigger a call to the suggest
-    var minCharacters = 3;
-
-    // retrieve the input element
-    var inputElt = event.target;
-    // retrieve the input element value
-    var chars = inputElt.value
-
-    if (chars.length < minCharacters ) { 
+searchInput.addEventListener('input', async function() {
+    const searchTerm = this.value.trim();
+    if (searchTerm === '') {
+        searchResults.innerHTML = '';
         return;
-    } else { 
-	// Set up headers
-	let headers = new Headers();
-	headers.append("Accept", "application/json");
-	headers.append("Content-Type", "application/json");
-    headers.append("FT-Calling-App", "ft-api-demo");
-    headers.append("FT-Calling-App-Version", "0.42");
-	// call the FT Suggest API...
-	let APIhost = "/demo";
-    const suggestPromise = fetch(new Request(APIhost + '/api/khub/suggest'),{
-	    method: 'POST',
-	    body:JSON.stringify({
-		input: chars,
-		contentLocale: "en-US",
-		maxCount: '10'
-	    }),
-	    headers:headers
-	}).then(response => response.json())        // Parse the Suggest response
-	    .then(jsonTree => { //with the JSON array returned:
-		// clear any previously loaded options in the datalist
-		suggestionsList.innerHTML = "";    
-		// Loop over the "suggestions" element of the JSON array.
-		jsonTree.suggestions
-		    .forEach(listItem => {
-			// Create a new <option> element for each array item
-			var option = document.createElement('option');
-			// Set the value using the item in the JSON array.
-			option.text = "[" + listItem.type + "]";
-			option.value = listItem.value;
-			// Add the <option> element to the <datalist> tag.
-			suggestionsList.appendChild(option);
-		    }) //end of forEach
-	    }); // end of then(jsonTree =>
-    }        
-}
+    }
+
+    try {
+        const FTAPI = await new window.fluidtopics.FluidTopicsApi();
+
+        const body = {
+            "input": searchTerm,
+            "contentLocale": contentLang,
+            "filters": [{
+                "key": Version_FT,
+                "values": [Version_FT_value]
+            }]
+        };
+
+        let response = await FTAPI.post(`/api/khub/suggest`, body);
+
+        let suggestions = response.suggestions;
+
+        searchResults.innerHTML = '';
+
+        if (suggestions.length === 0) {
+            const li = document.createElement('li');
+            li.textContent = noSuggestionsMessage;
+            searchResults.appendChild(li);
+        } else {
+            suggestions.forEach(suggestion => {
+                const li = document.createElement('li');
+
+                const encodedSuggestion = suggestion.value.replace(/ /g, '+');
+                const encodedFilters = encodeURIComponent(`${Version_FT}~"${Version_FT_value}"`);
+
+                const url = `/search?content-lang=${contentLang}&query=${encodedSuggestion}&filters=${encodedFilters}`;
+
+                const a = document.createElement('a');
+                a.href = url;
+                a.textContent = suggestion.value;
+
+                li.appendChild(a);
+                searchResults.appendChild(li);
+            });
+        }
+
+    } catch (error) {
+        console.error('Error fetching suggestions:', error);
+    }
+});
