@@ -13,7 +13,7 @@ sw.async = true;
 sw.src = 'https://cdn.jsdelivr.net/npm/@fluid-topics/ft-size-watcher/build/ft-size-watcher.min.js';
 document.append(sw);
 
-document.getElementById('toto').addEventListener('click', function() {
+document.getElementById('question-button').addEventListener('click', function() {
   let iph = document.getElementById('iph');
   //iph.setAttribute('opened', 'true');
   console.log(iph.getAttribute('opened'))
