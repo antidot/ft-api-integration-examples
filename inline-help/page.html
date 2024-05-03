@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <link rel="stylesheet" href="./style.css" />
+    <script src="./script.js"></script>
+    <link
+      rel="shortcut icon"
+      type="image/png"
+      href="https://discover.fluidtopics.com/public/favicon-96x96.png"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>FT ITG - Inline Help Droids</title>
+  </head>
+  <body>
+    <div style="color: #852a79; margin: 3px 3px 3px 10px">
+      Inline Help - Droids
+    </div>
+    <header>
+      <img
+        class="form-img"
+        src="https://sandbox.fluidtopics.net/docredesign/portal-asset/droid-logo"
+      />
+      <div class="form-title">Droids Catalog</div>
+    </header>
+    <div class="content">
+      <form action="javascript:;">
+        <h2>Order your own Droid</h2>
+
+        <div class="model">
+          <label>Droids Model</label>
+          <div class="help-tip" id="droids_en.ditamap">
+            <div class="help-content">
+              <!-- Will be filled with the API-->
+            </div>
+          </div>
+        </div>
+
+        <div class="option">
+          <div>
+            <input type="radio" id="c3po" name="mark_type" value="c3po" />
+            <label for="c3po">C-3PO</label>
+          </div>
+          <div class="help-tip" id="topics_en/c3po">
+            <div class="help-content">
+              <!-- Will be filled with the API-->
+            </div>
+          </div>
+        </div>
+        <div class="option">
+          <div>
+            <input type="radio" id="r2d2" name="mark_type" value="r2d2" />
+            <label for="r2d2">R2-D2</label>
+          </div>
+          <div class="help-tip" id="topics_en/r2d2">
+            <div class="help-content">
+              <!-- Will be filled with the API-->
+            </div>
+          </div>
+        </div>
+        <div class="option">
+          <div>
+            <input type="radio" id="bb8" name="mark_type" value="bb8" />
+            <label for="bb8">BB-8</label>
+          </div>
+          <div class="help-tip" id="topics_en/bb8">
+            <div class="help-content">
+              <!-- Will be filled with the API-->
+            </div>
+          </div>
+        </div>
+
+        <!-- <input type="submit" id="popupButton"> -->
+        <button id="popupButton">Order</button>
+
+    </form>
+
+
+      <div id="popup" class="popup">
+        <div class="popup-content">
+          <span class="close" id="closeButton">&times;</span>
+          <h2> <i class="fas fa-check-circle"></i> Congrats!</h2>
+          <p>Thank you for ordering a droid on our website.</p>
+        </div>
+      </div>
+
+    </div>
+  </body>
+</html>
