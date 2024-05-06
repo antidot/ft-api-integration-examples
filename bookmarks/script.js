@@ -1,4 +1,4 @@
-let FtCallingApp = 'amd-personalised-landing-page';
+let FtCallingApp = 'custom-landing-page';
 
 let bookmarks;
 

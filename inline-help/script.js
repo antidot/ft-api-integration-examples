@@ -3,7 +3,6 @@ API
 =====*/
 
 const APIhost = "https://sandbox.fluidtopics.net/training";
-// const APIhost = "https://sandbox.fluidtopics.net/docredesign";
 
 const setHeaders = () => {
   const headers = new Headers();
@@ -36,7 +35,6 @@ const send = (method, route, callback, payload = null) => {
       callback(jsonTree);
     });
 };
-
 
 /*=====
 Inline help
@@ -73,7 +71,6 @@ function loadHelp(inlineHelp, callerID){
     send('GET', route, callback);
   }
 }
-
 
 /*=====
 Fake popup
