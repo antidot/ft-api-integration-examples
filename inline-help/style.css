@@ -193,3 +193,46 @@ input[type="submit" i] {
     100% { opacity:100%; }
 }
 
+/* Fake popup */
+.popup {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #a2217f;
+    padding: 20px;
+    border: 2px solid #852a79;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    z-index: 999;
+    border-radius: 25px;
+  }
+  
+  .popup-content {
+    text-align: center;
+    color: white; 
+  }
+  
+  .close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    font-size: 20px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #a2217f;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  button:hover {
+    background-color: #852a79;
+  }
+  
