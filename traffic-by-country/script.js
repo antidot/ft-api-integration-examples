@@ -73,10 +73,10 @@ async function main() {
 
 // Function to create and append the Chart.js script element
 function createChartScriptElement() {
-  const jqueryScript = document.createElement("script");
-  jqueryScript.src = "https://cdn.jsdelivr.net/npm/chart.js";
-  jqueryScript.onload = main;
-  document.querySelector(".container").appendChild(jqueryScript);
+  const chartScript = document.createElement("script");
+  chartScript.src = "https://cdn.jsdelivr.net/npm/chart.js";
+  chartScript.onload = main;
+  document.querySelector(".container").appendChild(chartScript);
 }
 
 // Execute createChartScriptElement function to load Chart.js script
