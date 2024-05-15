@@ -1,0 +1,25 @@
+* {
+  font-family: "Source Sans Pro", system-ui;
+}
+
+input[type="submit"] {
+  display: block;
+}
+
+#waitingMessage,
+#successMessage,
+#errorMessage {
+  display: none;
+}
+
+#waitingMessage {
+  color: blue;
+}
+
+#successMessage {
+  color: green;
+}
+
+#errorMessage {
+  color: red;
+}
