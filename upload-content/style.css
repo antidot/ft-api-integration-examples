@@ -2,6 +2,10 @@
   font-family: "Source Sans Pro", system-ui;
 }
 
+#uploadForm {
+  display: none;
+}
+
 input[type="submit"] {
   display: block;
 }

@@ -1,3 +1,10 @@
+var apiKey = "";
+
+document.getElementById("setApiKeyButton").addEventListener("click", function () {
+    apiKey = document.getElementById("api_key").value;
+    populateSources();
+  });
+
 function showMessage(messageId) {
   var messageElements = ["waitingMessage", "successMessage", "errorMessage"];
 
@@ -9,7 +16,11 @@ function showMessage(messageId) {
 }
 
 function populateSources() {
-  fetch("/api/admin/khub/sources")
+  fetch("/api/admin/khub/sources", {
+    headers: {
+      Authorization: "Bearer " + apiKey,
+    },
+  })
     .then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -24,9 +35,12 @@ function populateSources() {
         option.textContent = source.name;
         sourceSelect.appendChild(option);
       });
+      // Show upload form on successful source population
+      document.getElementById("uploadForm").style.display = "block";
     })
     .catch((error) => {
       console.error("Error fetching sources:", error);
+      showMessage("errorMessage");
     });
 }
 
@@ -40,8 +54,6 @@ function uploadFile(sourceId) {
 
   var formData = new FormData();
   formData.append("file", file);
-
-  var apiKey = "";
 
   showMessage("waitingMessage");
 
@@ -64,7 +76,6 @@ function uploadFile(sourceId) {
     })
     .catch((error) => {
       console.error("Error uploading file:", error);
-      // Handle error
       showMessage("errorMessage");
     });
 }
@@ -75,6 +86,3 @@ document.getElementById("uploadForm").addEventListener("submit", function (event
     var selectedSourceId = sourceSelect.value;
     uploadFile(selectedSourceId);
   });
-
-// Populate sources when the page loads
-populateSources();
