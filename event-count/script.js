@@ -1,12 +1,20 @@
 let chart;
 
+// First day of the month 13 months ago
+const startDate = new Date(new Date().setMonth(new Date().getMonth() - 13, 1)).toISOString().split('T')[0]
+
+// First day of the previous month
+const endDate = new Date(new Date().setMonth(new Date().getMonth() - 1, 1)).toISOString().split('T')[0]
+
+const eventType = document.getElementById("event-type-dropdown").value;
+
 // Function to fetch event count data from Fluid Topics API
-async function fetchEventCountData(startDate, eventType) {
+async function fetchEventCountData(startDate, endDate, eventType) {
   const apiUrl = "/analytics/api/v1/traffic/event-counts";
 
   const body = JSON.stringify({
     startDate: startDate,
-    endDate: "2024-05-01",
+    endDate: endDate,
     groupByPeriod: "month",
     filters: {
       name: [eventType],
@@ -97,10 +105,9 @@ function processAndDisplayData(data, eventType) {
 
 // Event listener for the dropdown to fetch data on selection change
 document.getElementById("event-type-dropdown").addEventListener("change", () => {
-    const startDate = "2023-04-01";
-    const eventType = document.getElementById("event-type-dropdown").value;
-
-    fetchEventCountData(startDate, eventType)
+  const eventType = document.getElementById("event-type-dropdown").value;
+  
+  fetchEventCountData(startDate, endDate, eventType)
       .then((data) => processAndDisplayData(data, eventType))
       .catch((error) => {
         console.error("Error fetching data:", error);
@@ -109,10 +116,8 @@ document.getElementById("event-type-dropdown").addEventListener("change", () => 
   });
 
 async function main() {
-  const startDate = "2023-04-01";
-  const eventType = document.getElementById("event-type-dropdown").value;
+  const terms_top = await fetchEventCountData(startDate, endDate, eventType);
 
-  const terms_top = await fetchEventCountData(startDate, eventType);
   processAndDisplayData(terms_top, eventType);
 }
 
