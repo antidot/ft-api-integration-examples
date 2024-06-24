@@ -1,8 +1,9 @@
 var apiKey = "";
 
 document.getElementById("setApiKeyButton").addEventListener("click", function () {
-    apiKey = document.getElementById("api_key").value;
-    populateSources();
+    const apiKey = document.getElementById("api_key").value;
+    const url = document.getElementById("url").value;
+    populateSources(apiKey, url);
   });
 
 function showMessage(messageId) {
@@ -15,8 +16,8 @@ function showMessage(messageId) {
   document.getElementById(messageId).style.display = "block";
 }
 
-function populateSources() {
-  fetch("/api/admin/khub/sources", {
+function populateSources(apiKey, url) {
+  fetch(`${url}/api/admin/khub/sources`, {
     headers: {
       Authorization: "Bearer " + apiKey,
     },
@@ -37,6 +38,7 @@ function populateSources() {
       });
       // Show upload form on successful source population
       document.getElementById("uploadForm").style.display = "block";
+      document.getElementById("sourceSelect").style.display = "block";
     })
     .catch((error) => {
       console.error("Error fetching sources:", error);
@@ -44,7 +46,7 @@ function populateSources() {
     });
 }
 
-function uploadFile(sourceId) {
+function uploadFile(sourceId, url, apiKey) {
   var fileInput = document.getElementById("fileInput");
   var file = fileInput.files[0];
   if (!file) {
@@ -57,7 +59,7 @@ function uploadFile(sourceId) {
 
   showMessage("waitingMessage");
 
-  fetch(`/api/admin/khub/sources/${sourceId}/upload`, {
+  fetch(`${url}/api/admin/khub/sources/${sourceId}/upload`, {
     method: "POST",
     headers: {
       Authorization: "Bearer " + apiKey,
@@ -82,7 +84,14 @@ function uploadFile(sourceId) {
 
 document.getElementById("uploadForm").addEventListener("submit", function (event) {
     event.preventDefault();
+    
     var sourceSelect = document.getElementById("sourceSelect");
+    var urlValue = document.getElementById("url");
+    var api_keyValue = document.getElementById("api_key");
+
     var selectedSourceId = sourceSelect.value;
-    uploadFile(selectedSourceId);
+    var enteredUrl = urlValue.value;
+    var enteredKey = api_keyValue.value;
+
+    uploadFile(selectedSourceId, enteredUrl, enteredKey);
   });
