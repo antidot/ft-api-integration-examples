@@ -1,5 +1,3 @@
-// API Calls and constants
-const FTAPI = new window.fluidtopics.FluidTopicsApi();
 const excludedKeys = [
     'ft:attachmentsSize', 'ft:baseId', 'ft:contentSize', 'ft:document_type',
     'ft:editorialType', 'ft:isArticle', 'ft:isBook', 'ft:isPublication',
@@ -8,27 +6,40 @@ const excludedKeys = [
     'ft:sourceId', 'ft:sourceName', 'ft:sourceType', 'ft:structure'
 ];
 
-async function fetchDocuments() {
+async function fetchDocuments(base_url) {
     try {
-        return await FTAPI.get(`/api/khub/maps`);
+        const response = await fetch(`${base_url}/api/khub/maps`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
     } catch (error) {
         console.error('Error fetching documents:', error);
         throw error;
     }
 }
 
-async function fetchDocumentById(documentId) {
+async function fetchDocumentById(base_url, documentId) {
     try {
-        return await FTAPI.get(`/api/khub/maps/${documentId}`);
+        const response = await fetch(`${base_url}/api/khub/maps/${documentId}`);
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        return await response.json();
     } catch (error) {
         console.error('Error fetching document by ID:', error);
         throw error;
     }
 }
 
-async function updateDocumentMetadata(selectedValue, requestBody) {
+async function updateDocumentMetadata(base_url, selectedValue, requestBody) {
     try {
-        return await FTAPI.put(`/api/admin/khub/publications/update-metadata?ft:publicationId=${selectedValue}`, requestBody);
+        const response = await fetch(`${base_url}/api/admin/khub/publications/update-metadata?ft:publicationId=${selectedValue}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const text = await response.text();
+        return text ? JSON.parse(text) : {}; // Handle empty responses
     } catch (error) {
         console.error('Error updating metadata:', error);
         throw error;
@@ -79,30 +90,36 @@ function createSubmitButton() {
 }
 
 async function handleSelectChange(select, metadataDisplay, metadataLi, replaceLi) {
+    const base_url = document.getElementById('base_url').value;
     const selectedValue = select.value;
-    const toggleLi = document.querySelector('li:nth-child(4)'); 
-    const submitLi = document.querySelector('li:nth-child(5)'); 
+
+    const toggleLi = document.querySelector('li:nth-child(5)'); 
+    const submitLi = document.querySelector('li:nth-child(6)'); 
+
     if (selectedValue) {
         try {
-            const document = await fetchDocumentById(selectedValue);
+            const document = await fetchDocumentById(base_url, selectedValue);
             displayMetadata(document.metadata.filter(meta => !excludedKeys.includes(meta.key)), metadataDisplay);
-            metadataLi.style.display = 'list-item';  
-            replaceLi.style.display = 'list-item';
-            toggleLi.style.display = 'list-item';
-            submitLi.style.display = 'list-item';  
+            
+            // Check for and display elements correctly
+            if (metadataLi) metadataLi.style.display = 'list-item';  
+            if (replaceLi) replaceLi.style.display = 'list-item';
+            if (toggleLi) toggleLi.style.display = 'list-item';
+            if (submitLi) submitLi.style.display = 'list-item';  
         } catch (error) {
             console.error('Error fetching metadata:', error);
         }
     } else {
         metadataDisplay.innerHTML = ''; 
-        metadataLi.style.display = 'none';
-        replaceLi.style.display = 'none';
-        toggleLi.style.display = 'none';
-        submitLi.style.display = 'none';
+        if (metadataLi) metadataLi.style.display = 'none';
+        if (replaceLi) replaceLi.style.display = 'none';
+        if (toggleLi) toggleLi.style.display = 'none';
+        if (submitLi) submitLi.style.display = 'none';
      }
 }
 
 async function handleSubmit() {
+    const base_url = document.getElementById('base_url').value;
     const selectedValue = document.querySelector('select').value;
     const toggleState = document.getElementById('inheritance-toggle').checked;
     if (selectedValue) {
@@ -132,9 +149,9 @@ async function handleSubmit() {
             metadataDisplay.appendChild(spinnerOverlay);
 
             try {
-                await updateDocumentMetadata(selectedValue, requestBody);
+                await updateDocumentMetadata(base_url, selectedValue, requestBody);
                 await new Promise(resolve => setTimeout(resolve, 10000)); 
-                await handleSelectChange(document.querySelector('select'), metadataDisplay, document.querySelector('li.metadataLi'), document.querySelector('li.replaceLi'));
+                await handleSelectChange(document.querySelector('select'), metadataDisplay, document.querySelector('li:nth-child(2)'), document.querySelector('li:nth-child(3)'));
             } catch (error) {
                 console.error('Error updating metadata:', error);
             } finally {
@@ -153,7 +170,6 @@ async function handleSubmit() {
 function addNewInputField(container) {
     const inputGroup = document.createElement('div');
     inputGroup.className = 'input-group';
-    const inputElements = container.getElementsByClassName('additionalInfo');
 
     const newInput = document.createElement('input');
     newInput.type = 'text';
@@ -237,9 +253,13 @@ async function generateDropdown() {
 
     const ol = document.createElement('ol');
 
+    const baseUrlLi = document.createElement('li');
     const dropdownLi = document.createElement('li');
+    dropdownLi.className = 'metadataLi'; // This will help to identify later
     const metadataLi = document.createElement('li');
+    metadataLi.className = 'metadataLi';
     const replaceLi = document.createElement('li');
+    replaceLi.className = 'replaceLi';
     const toggleLi = document.createElement('li'); 
     const submitLi = document.createElement('li'); 
 
@@ -249,17 +269,28 @@ async function generateDropdown() {
 
     additionalInfoContainer.className = "additional-info-container";
 
+    const baseUrlLabel = document.createElement('span');
+    baseUrlLabel.classList.add("instruction");
+    baseUrlLabel.textContent = 'Enter base URL:';
+    baseUrlLi.appendChild(baseUrlLabel);
+    baseUrlLi.appendChild(document.createElement('br'));
+
+    const baseUrlInput = document.createElement('input');
+    baseUrlInput.type = 'text';
+    baseUrlInput.id = 'base_url';
+    baseUrlLi.appendChild(baseUrlInput);
+
     const dropdownLabel = document.createElement('span');
     dropdownLabel.classList.add("instruction");
     dropdownLabel.textContent = 'Select a document:';
     dropdownLi.appendChild(dropdownLabel);
-    dropdownLi.appendChild(document.createElement('br')); 
+    dropdownLi.appendChild(document.createElement('br'));
 
     const metadataLabel = document.createElement('span');
     metadataLabel.classList.add("instruction");
     metadataLabel.textContent = 'Select a metadata key to replace:';
     metadataLi.appendChild(metadataLabel);
-    metadataLi.appendChild(document.createElement('br')); 
+    metadataLi.appendChild(document.createElement('br'));
 
     const replaceLabel = document.createElement('span');
     replaceLabel.classList.add("instruction");
@@ -274,12 +305,12 @@ async function generateDropdown() {
     toggleSwitch.type = 'checkbox';
     toggleSwitch.id = 'inheritance-toggle';
     toggleSwitch.classList.add("checkbox");
-    toggleSwitch.checked = true; 
+    toggleSwitch.checked = true;
 
     const toggleStateLabel = document.createElement('span');
     toggleStateLabel.id = 'toggle-state-label';
-    toggleStateLabel.textContent = 'Yes'; 
-    toggleSwitch.addEventListener('change', function() {
+    toggleStateLabel.textContent = 'Yes';
+    toggleSwitch.addEventListener('change', function () {
         toggleStateLabel.textContent = toggleSwitch.checked ? 'Yes' : 'No';
     });
 
@@ -295,38 +326,49 @@ async function generateDropdown() {
     metadataLi.style.display = 'none';
     replaceLi.style.display = 'none';
     toggleLi.style.display = 'none';
-    submitLi.style.display = 'none'; 
+    submitLi.style.display = 'none';
 
-    try {
-        const documents = await fetchDocuments();
-        const { productValues, productMap } = createDropdownOptions(documents);
-        const select = renderDropdown(productValues, productMap, metadataDisplay, metadataLi, replaceLi);
-        const submitButton = createSubmitButton();
+    const documentsFetchButton = document.createElement('button');
+    documentsFetchButton.textContent = 'Fetch documents';
+    documentsFetchButton.type = 'button';
+    documentsFetchButton.classList.add('fetch-documents');
+    documentsFetchButton.addEventListener('click', async () => {
+        try {
+            const base_url = document.getElementById('base_url').value;
+            const documents = await fetchDocuments(base_url);
+            const { productValues, productMap } = createDropdownOptions(documents);
+            const select = renderDropdown(productValues, productMap, metadataDisplay, metadataLi, replaceLi);
+            const submitButton = createSubmitButton();
 
-        const plusButtonContainer = document.createElement('div');
-        plusButtonContainer.className = 'button-container';
-        const plusButton = document.createElement('button'); 
-        plusButton.textContent = '+';
-        plusButton.type = 'button';
-        plusButton.addEventListener('click', () => addNewInputField(additionalInfoContainer));
-        plusButtonContainer.appendChild(plusButton);
+            const plusButtonContainer = document.createElement('div');
+            plusButtonContainer.className = 'button-container';
+            const plusButton = document.createElement('button');
+            plusButton.textContent = '+';
+            plusButton.type = 'button';
+            plusButton.addEventListener('click', () => addNewInputField(additionalInfoContainer));
+            plusButtonContainer.appendChild(plusButton);
 
-        dropdownLi.appendChild(select);
-        metadataLi.appendChild(metadataDisplay);
+            dropdownLi.appendChild(select);
+            metadataLi.appendChild(metadataDisplay);
 
-        addNewInputField(additionalInfoContainer);
-        additionalInfoContainer.appendChild(plusButtonContainer);
-        replaceLi.appendChild(additionalInfoContainer);
-        ol.appendChild(dropdownLi);
-        ol.appendChild(metadataLi);
-        ol.appendChild(replaceLi);
-        ol.appendChild(toggleLi); 
-        ol.appendChild(submitLi); 
-        submitLi.appendChild(submitButton);
-        swapper.appendChild(ol);
-    } catch (error) {
-        console.error('Error generating dropdown:', error);
-    }
+            addNewInputField(additionalInfoContainer);
+            additionalInfoContainer.appendChild(plusButtonContainer);
+            replaceLi.appendChild(additionalInfoContainer);
+            ol.appendChild(dropdownLi);
+            ol.appendChild(metadataLi);
+            ol.appendChild(replaceLi);
+            ol.appendChild(toggleLi);
+            ol.appendChild(submitLi);
+            submitLi.appendChild(submitButton);
+        } catch (error) {
+            console.error('Error fetching documents:', error);
+        }
+    });
+
+    baseUrlLi.appendChild(documentsFetchButton);
+    ol.appendChild(baseUrlLi);
+
+    swapper.appendChild(ol);
 }
 
 generateDropdown();
