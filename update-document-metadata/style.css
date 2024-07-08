@@ -69,4 +69,20 @@ td {
   z-index: 1000;
 }
 
+#waitingMessage,
+#successMessage,
+#errorMessage {
+  display: none;
+}
 
+#waitingMessage {
+  color: blue;
+}
+
+#successMessage {
+  color: green;
+}
+
+#errorMessage {
+  color: red;
+}

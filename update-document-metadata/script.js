@@ -6,6 +6,8 @@ const excludedKeys = [
     'ft:sourceId', 'ft:sourceName', 'ft:sourceType', 'ft:structure'
 ];
 
+let apiKey = '';
+
 async function fetchDocuments(base_url) {
     try {
         const response = await fetch(`${base_url}/api/khub/maps`);
@@ -13,6 +15,7 @@ async function fetchDocuments(base_url) {
         return await response.json();
     } catch (error) {
         console.error('Error fetching documents:', error);
+        showMessage("errorMessage");
         throw error;
     }
 }
@@ -24,6 +27,7 @@ async function fetchDocumentById(base_url, documentId) {
         return await response.json();
     } catch (error) {
         console.error('Error fetching document by ID:', error);
+        showMessage("errorMessage");
         throw error;
     }
 }
@@ -33,7 +37,8 @@ async function updateDocumentMetadata(base_url, selectedValue, requestBody) {
         const response = await fetch(`${base_url}/api/admin/khub/publications/update-metadata?ft:publicationId=${selectedValue}`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${apiKey}`
             },
             body: JSON.stringify(requestBody)
         });
@@ -42,6 +47,7 @@ async function updateDocumentMetadata(base_url, selectedValue, requestBody) {
         return text ? JSON.parse(text) : {}; // Handle empty responses
     } catch (error) {
         console.error('Error updating metadata:', error);
+        showMessage("errorMessage");
         throw error;
     }
 }
@@ -61,61 +67,44 @@ function createDropdownOptions(documents) {
     return { productValues, productMap };
 }
 
-function renderDropdown(productValues, productMap, metadataDisplay, metadataLi, replaceLi) {
-    const select = document.createElement('select');
+function renderDropdown(productValues, productMap) {
+    const select = document.querySelector('select');
+    select.innerHTML = ''; // Clear previous options
     const defaultOption = document.createElement('option');
-
     defaultOption.text = '';
     defaultOption.value = '';
     select.append(defaultOption);
-
+    
     productValues.forEach(value => {
         const option = document.createElement('option');
         option.value = productMap.get(value);
         option.text = `${value} (${productMap.get(value)})`;
         select.append(option);
     });
-
-    select.addEventListener('change', () => handleSelectChange(select, metadataDisplay, metadataLi, replaceLi));
-    return select;
 }
 
-function createSubmitButton() {
-    const submitButton = document.createElement('button');
-    submitButton.textContent = 'Submit';
-    submitButton.type = 'button';
-    submitButton.classList.add("submit");
-    submitButton.addEventListener('click', handleSubmit);
-    return submitButton;
-}
-
-async function handleSelectChange(select, metadataDisplay, metadataLi, replaceLi) {
+function handleSelectChange(select, metadataDisplay, metadataLi, replaceLi, inheritLi, submitLi) {
     const base_url = document.getElementById('base_url').value;
     const selectedValue = select.value;
 
-    const toggleLi = document.querySelector('li:nth-child(5)'); 
-    const submitLi = document.querySelector('li:nth-child(6)'); 
-
     if (selectedValue) {
-        try {
-            const document = await fetchDocumentById(base_url, selectedValue);
+        fetchDocumentById(base_url, selectedValue).then(document => {
             displayMetadata(document.metadata.filter(meta => !excludedKeys.includes(meta.key)), metadataDisplay);
             
-            // Check for and display elements correctly
-            if (metadataLi) metadataLi.style.display = 'list-item';  
-            if (replaceLi) replaceLi.style.display = 'list-item';
-            if (toggleLi) toggleLi.style.display = 'list-item';
-            if (submitLi) submitLi.style.display = 'list-item';  
-        } catch (error) {
+            metadataLi.classList.remove('hidden');
+            replaceLi.classList.remove('hidden');
+            inheritLi.classList.remove('hidden');
+            submitLi.classList.remove('hidden');
+        }).catch(error => {
             console.error('Error fetching metadata:', error);
-        }
+            showMessage("errorMessage");
+        });
     } else {
-        metadataDisplay.innerHTML = ''; 
-        if (metadataLi) metadataLi.style.display = 'none';
-        if (replaceLi) replaceLi.style.display = 'none';
-        if (toggleLi) toggleLi.style.display = 'none';
-        if (submitLi) submitLi.style.display = 'none';
-     }
+        metadataLi.classList.add('hidden');
+        replaceLi.classList.add('hidden');
+        inheritLi.classList.add('hidden');
+        submitLi.classList.add('hidden');
+    }
 }
 
 async function handleSubmit() {
@@ -126,10 +115,13 @@ async function handleSubmit() {
         const checkedRadio = document.querySelector('#swapper input[type="radio"]:checked');
         const inputs = document.querySelectorAll('.additionalInfo'); 
         if (checkedRadio && inputs.length > 0) {
+            showMessage("waitingMessage");
+
             const key = checkedRadio.getAttribute("data-metakey");
             const values = Array.from(inputs).map(input => input.value).filter(value => value.trim() !== "");
             if (values.length === 0) {
-                console.log('Please fill out at least one input field.');
+                document.getElementById('errorMessage').textContent = 'Please fill out at least one input field.'
+                showMessage("errorMessage");
                 return;
             }
             const requestBody = {
@@ -151,19 +143,22 @@ async function handleSubmit() {
             try {
                 await updateDocumentMetadata(base_url, selectedValue, requestBody);
                 await new Promise(resolve => setTimeout(resolve, 10000)); 
-                await handleSelectChange(document.querySelector('select'), metadataDisplay, document.querySelector('li:nth-child(2)'), document.querySelector('li:nth-child(3)'));
+                handleSelectChange(document.querySelector('select'), metadataDisplay, document.querySelector('.metadataLi'), document.querySelector('.replaceLi'), document.querySelector('.inheritLi'), document.querySelector('.submitLi'));
+                showMessage("successMessage");
             } catch (error) {
                 console.error('Error updating metadata:', error);
+                showMessage("errorMessage");
             } finally {
                 inputs.forEach(input => input.value = ''); 
+                spinnerOverlay.remove();
             }
         } else if (!checkedRadio) {
-            console.log('Please select a radio button');
+            document.getElementById('errorMessage').textContent = 'Please select a radio button.'
         } else if (inputs.length === 0) {
-            console.log('No input fields found');
+            document.getElementById('errorMessage').textContent = 'No input fields found.'
         }
     } else {
-        console.log('Please select a product');
+        document.getElementById('errorMessage').textContent = 'Please select a product.'
     }
 }
 
@@ -181,9 +176,7 @@ function addNewInputField(container) {
     minusButton.type = 'button';
     minusButton.classList.add("minus");
     minusButton.addEventListener('click', () => {
-        if (container.getElementsByClassName('input-group').length > 1) {
-            inputGroup.remove();
-        }
+        inputGroup.remove();
     });
 
     inputGroup.appendChild(newInput);
@@ -247,128 +240,59 @@ function displayMetadata(metadataArray, container) {
     }
 }
 
-async function generateDropdown() {
-    const swapper = document.getElementById("swapper");
-    swapper.innerHTML = ''; 
+document.querySelector('.fetch-documents').addEventListener('click', async () => {
+    try {
+        const base_url = document.getElementById('base_url').value;
+        const documents = await fetchDocuments(base_url);
 
-    const ol = document.createElement('ol');
+        const { productValues, productMap } = createDropdownOptions(documents);
 
-    const baseUrlLi = document.createElement('li');
-    const dropdownLi = document.createElement('li');
-    dropdownLi.className = 'metadataLi'; // This will help to identify later
-    const metadataLi = document.createElement('li');
-    metadataLi.className = 'metadataLi';
-    const replaceLi = document.createElement('li');
-    replaceLi.className = 'replaceLi';
-    const toggleLi = document.createElement('li'); 
-    const submitLi = document.createElement('li'); 
+        renderDropdown(productValues, productMap);
 
-    const metadataDisplay = document.createElement('div');
-    metadataDisplay.className = 'metadataDisplay';
-    const additionalInfoContainer = document.createElement('div');
+        document.querySelector('.dropdownLi').classList.remove('hidden');
+    } catch (error) {
+        console.error('Error fetching documents:', error);
+        showMessage("errorMessage");
+    }
+});
 
-    additionalInfoContainer.className = "additional-info-container";
+document.querySelector('select').addEventListener('change', () => {
+    handleSelectChange(
+        document.querySelector('select'), 
+        document.querySelector('.metadataDisplay'), 
+        document.querySelector('.metadataLi'), 
+        document.querySelector('.replaceLi'), 
+        document.querySelector('.inheritLi'), 
+        document.querySelector('.submitLi')
+    );
+});
 
-    const baseUrlLabel = document.createElement('span');
-    baseUrlLabel.classList.add("instruction");
-    baseUrlLabel.textContent = 'Enter base URL:';
-    baseUrlLi.appendChild(baseUrlLabel);
-    baseUrlLi.appendChild(document.createElement('br'));
+document.querySelector('.submit').addEventListener('click', handleSubmit);
 
-    const baseUrlInput = document.createElement('input');
-    baseUrlInput.type = 'text';
-    baseUrlInput.id = 'base_url';
-    baseUrlLi.appendChild(baseUrlInput);
+document.getElementById('inheritance-toggle').addEventListener('change', function() {
+    document.getElementById('toggle-state-label').textContent = this.checked ? 'Yes' : 'No';
+});
 
-    const dropdownLabel = document.createElement('span');
-    dropdownLabel.classList.add("instruction");
-    dropdownLabel.textContent = 'Select a document:';
-    dropdownLi.appendChild(dropdownLabel);
-    dropdownLi.appendChild(document.createElement('br'));
+document.querySelector('.plus').addEventListener('click', () => {
+    addNewInputField(document.querySelector('.additional-info-container'));
+});
 
-    const metadataLabel = document.createElement('span');
-    metadataLabel.classList.add("instruction");
-    metadataLabel.textContent = 'Select a metadata key to replace:';
-    metadataLi.appendChild(metadataLabel);
-    metadataLi.appendChild(document.createElement('br'));
+document.querySelector('.additional-info-container').addEventListener('click', (event) => {
+    if (event.target.classList.contains("minus")) {
+        event.target.closest('.input-group').remove();
+    }
+});
 
-    const replaceLabel = document.createElement('span');
-    replaceLabel.classList.add("instruction");
-    replaceLabel.textContent = 'Enter a replacement:';
-    replaceLi.appendChild(replaceLabel);
+document.querySelector('.confirm-api-key').addEventListener('click', () => {
+    apiKey = document.getElementById('api_key').value;
+});
 
-    const toggleLabel = document.createElement('span');
-    toggleLabel.classList.add("instruction");
-    toggleLabel.textContent = 'Should the topics of the document inherit the new value(s)?';
+function showMessage(messageId) {
+    const messageElements = ["waitingMessage", "successMessage", "errorMessage"];
 
-    const toggleSwitch = document.createElement('input');
-    toggleSwitch.type = 'checkbox';
-    toggleSwitch.id = 'inheritance-toggle';
-    toggleSwitch.classList.add("checkbox");
-    toggleSwitch.checked = true;
-
-    const toggleStateLabel = document.createElement('span');
-    toggleStateLabel.id = 'toggle-state-label';
-    toggleStateLabel.textContent = 'Yes';
-    toggleSwitch.addEventListener('change', function () {
-        toggleStateLabel.textContent = toggleSwitch.checked ? 'Yes' : 'No';
+    messageElements.forEach(function (id) {
+        document.getElementById(id).style.display = "none";
     });
 
-    toggleLi.appendChild(toggleLabel);
-    toggleLi.appendChild(toggleSwitch);
-    toggleLi.appendChild(toggleStateLabel);
-
-    const submitLabel = document.createElement('span');
-    submitLabel.classList.add("instruction");
-    submitLabel.textContent = 'Go?';
-    submitLi.appendChild(submitLabel);
-
-    metadataLi.style.display = 'none';
-    replaceLi.style.display = 'none';
-    toggleLi.style.display = 'none';
-    submitLi.style.display = 'none';
-
-    const documentsFetchButton = document.createElement('button');
-    documentsFetchButton.textContent = 'Fetch documents';
-    documentsFetchButton.type = 'button';
-    documentsFetchButton.classList.add('fetch-documents');
-    documentsFetchButton.addEventListener('click', async () => {
-        try {
-            const base_url = document.getElementById('base_url').value;
-            const documents = await fetchDocuments(base_url);
-            const { productValues, productMap } = createDropdownOptions(documents);
-            const select = renderDropdown(productValues, productMap, metadataDisplay, metadataLi, replaceLi);
-            const submitButton = createSubmitButton();
-
-            const plusButtonContainer = document.createElement('div');
-            plusButtonContainer.className = 'button-container';
-            const plusButton = document.createElement('button');
-            plusButton.textContent = '+';
-            plusButton.type = 'button';
-            plusButton.addEventListener('click', () => addNewInputField(additionalInfoContainer));
-            plusButtonContainer.appendChild(plusButton);
-
-            dropdownLi.appendChild(select);
-            metadataLi.appendChild(metadataDisplay);
-
-            addNewInputField(additionalInfoContainer);
-            additionalInfoContainer.appendChild(plusButtonContainer);
-            replaceLi.appendChild(additionalInfoContainer);
-            ol.appendChild(dropdownLi);
-            ol.appendChild(metadataLi);
-            ol.appendChild(replaceLi);
-            ol.appendChild(toggleLi);
-            ol.appendChild(submitLi);
-            submitLi.appendChild(submitButton);
-        } catch (error) {
-            console.error('Error fetching documents:', error);
-        }
-    });
-
-    baseUrlLi.appendChild(documentsFetchButton);
-    ol.appendChild(baseUrlLi);
-
-    swapper.appendChild(ol);
+    document.getElementById(messageId).style.display = "block";
 }
-
-generateDropdown();

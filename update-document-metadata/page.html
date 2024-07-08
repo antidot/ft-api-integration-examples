@@ -1,2 +1,52 @@
 <h1>Swap-o-tron</h1>
-<div id="swapper"></div>
+<div id="swapper">
+  <ol>
+    <li>
+      <span class="instruction">Enter base URL:</span><br />
+      <input type="text" id="base_url" />
+      <button type="button" class="fetch-documents">Fetch documents</button>
+    </li>
+    <li>
+      <span class="instruction">Enter API key:</span><br />
+      <input type="text" id="api_key" />
+      <button type="button" class="confirm-api-key">Confirm</button>
+    </li>
+    <li class="dropdownLi hidden">
+      <span class="instruction">Select a document:</span><br />
+      <select></select>
+    </li>
+    <li class="metadataLi hidden">
+      <span class="instruction">Select a metadata key to replace:</span><br />
+      <div class="metadataDisplay"></div>
+    </li>
+    <li class="replaceLi hidden">
+      <span class="instruction">Enter a replacement:</span>
+      <div class="additional-info-container">
+        <div class="input-group">
+          <input
+            type="text"
+            class="additionalInfo"
+            placeholder="Enter new value here"
+          />
+          <button type="button" class="minus">-</button>
+        </div>
+        <div class="button-container">
+          <button type="button" class="plus">+</button>
+        </div>
+      </div>
+    </li>
+    <li class="inheritLi hidden">
+      <span class="instruction">Should the topics of the document inherit the new value(s)?</span>
+      <input type="checkbox" id="inheritance-toggle" class="checkbox" checked />
+      <span id="toggle-state-label">Yes</span>
+    </li>
+    <li class="submitLi hidden">
+      <span class="instruction">Go?</span>
+      <button type="button" class="submit">Submit</button>
+    </li>
+  </ol>
+</div>
+
+<p id="waitingMessage">Waiting...</p>
+<p id="successMessage">Upload successful!</p>
+<p id="errorMessage">Error updating metadata. Please try again later.</p>
