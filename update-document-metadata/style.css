@@ -86,3 +86,6 @@ td {
 #errorMessage {
   color: red;
 }
+
+.hidden { display: none;}
+.relative { display: block;}
