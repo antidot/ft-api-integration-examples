@@ -1,3 +1,3 @@
 # Fluid Topics API samples
 
-Examples of Fluid Topics API integration used in the FT302 training.
+Source code for Fluid Topics integration examples available live at https://doc.fluidtopics.com/p/devhub
