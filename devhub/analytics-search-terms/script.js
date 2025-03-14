@@ -1,7 +1,7 @@
 FTAPI = await new window.fluidtopics.FluidTopicsApi();
 body = {
-  startDate: "2024-01-01",
-  endDate: "2024-02-01",
+  startDate: "2024-12-01",
+  endDate: "2025-01-01",
   paging: {
     page: 1,
     perPage: 50,

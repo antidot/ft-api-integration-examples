@@ -59,7 +59,7 @@ async function main() {
   const today = getCurrentDate();
   const minPercentage = 0.2;
 
-  const trafficData = await fetchTopCountriesTrafficData("2024-01-01", today);
+  const trafficData = await fetchTopCountriesTrafficData("2025-01-01", today);
   const filteredTrafficData = filterTopCountriesByPercentage(
     trafficData,
     minPercentage

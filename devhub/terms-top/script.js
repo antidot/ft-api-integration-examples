@@ -11,7 +11,7 @@ const DIVISION_FACTOR = 8;
 async function fetchTopSearchTerms(endDate) {
   const apiUrl = "/analytics/api/v2/searches/terms-top";
   const body = JSON.stringify({
-    startDate: "2023-04-01",
+    startDate: "2024-12-01",
     endDate: endDate,
     paging: {
       page: 1,
