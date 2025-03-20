@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="https://doc.fluidtopics.com/favicon.ico">
+  <title>Back Office - Analytics Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <header>
+    <div class="header-content">
+      <img src="https://www.fluidtopics.com/wp-content/uploads/sites/3/logoFluidTopics2020-white@2x.png" alt="Logo" class="logo">
+      <h1>Analytics Dashboard</h1>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid-container">
+
+      <div class="tile" id="most-viewed-docs">
+        <h2>Most Viewed Documents</h2>
+        <div class="loading-indicator">Loading...</div>
+        <table id="most-viewed-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Views</th>
+              <th>Link</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="tile" id="user-traffic">
+        <h2>User Traffic</h2>
+        <div class="loading-indicator">Loading...</div>
+        <canvas id="user-traffic-chart"></canvas>
+      </div>
+
+     <div class="tile" id="api-calls">
+        <h2>API Calls</h2>
+        <div class="loading-indicator">Loading...</div>
+        <canvas id="api-calls-chart"></canvas>
+      </div>
+
+      <div class="tile" id="top-browsers">
+        <h2>Top Browsers</h2>
+        <div class="loading-indicator">Loading...</div>
+        <canvas id="top-browsers-chart"></canvas>
+      </div>
+
+      <div class="tile" id="top-facets">
+        <h2>Top Facets</h2>
+        <div class="loading-indicator">Loading...</div>
+        <canvas id="top-facets-chart"></canvas>
+      </div>
+
+      <div class="tile" id="top-search-terms">
+        <h2>Top Search Terms</h2>
+        <div class="loading-indicator">Loading...</div>
+        <table id="top-search-terms-table">
+          <thead>
+            <tr>
+              <th>Search Term</th>
+              <th>Query Count</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+    </div>
+  </main>
+
+  <footer>
+    <p>© 2025 Analytics Dashboard</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
