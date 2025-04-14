@@ -1,0 +1,10 @@
+###
+# Search suggestions API
+POST https://pk.dronelift.net/api/khub/suggest HTTP/1.1
+Content-Type: application/json
+
+{
+    "input": "dro",
+    "contentLocale": "en-US",
+    "maxCount": 5
+}
