@@ -1,0 +1,24 @@
+###
+# As an original user, search for maps containing "API"
+curl -D 
+--request POST 'https://pk.dronelift.net/api/khub/maps/search' \
+--header 'Ft-Calling-App: crawler' \
+--header 'Ft-Calling-App-Version: version-42' \
+--header 'Authorization: Bearer FcRogKkrihKFWAtu5O8Qdl8DgtnncCe1' \
+--header 'Content-Type: application/json' \
+--data '{
+    "query": "API"
+}'
+
+###
+# As an impersonated user (ID: fa76fb8a-91d7-4008-96d6-86fea0c74406 ), search for maps containing "API"
+curl -D 
+--request POST 'https://pk.dronelift.net/api/khub/maps/search' \
+--header 'Ft-Calling-App: crawler' \
+--header 'Ft-Calling-App-Version: version-42' \
+--header 'Authorization: Bearer FcRogKkrihKFWAtu5O8Qdl8DgtnncCe1' \
+--header 'Content-Type: application/json' \
+--header 'FT-Impersonate-User-Id: fa76fb8a-91d7-4008-96d6-86fea0c74406' \
+--data '{
+    "query": "API"
+}'

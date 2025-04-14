@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>In-product help - web component</title>
+    <link
+      href="http://doc.fluidtopics.com/api/stylesheets/fonts.css"
+      rel="stylesheet"
+    />
+    <link
+      href="http://doc.fluidtopics.com/api/stylesheets/theme.css"
+      rel="stylesheet"
+    />
+    <script src="./script.js"></script>
+  </head>
+  <body>
+    <div class="example">
+      <ft-button icon="comment_question"> Open in-product help </ft-button>
+      <ft-text-field prefix="Navigate to path: " outlined=""> </ft-text-field>
+      <ft-in-product-help
+        portalurl="https://pk.dronelift.net"
+        opened=""
+        displaymode="standard"
+        closeicon="x_mark"
+        standardmodeicon="pip"
+        theatermodeicon="pip_wide"
+        fullscreenmodeicon="expand_wide"
+        enablehomebutton=""
+        homeicon="home"
+        enableopentabbutton=""
+        opentabicon="extlink_light"
+        iconvariant="fluid-topics"
+        style=""
+      ></ft-in-product-help>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,111 @@
+/* General Styles */
+body {
+    font-family: sans-serif;
+    margin: 0;
+    background-color: #f4f4f4;
+    color: #333;
+  }
+  
+  header,
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 1em 0;
+  }
+  
+  main {
+    padding: 20px;
+  }
+  
+  /* Grid Layout */
+  .grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    /* Three equal columns */
+    gap: 20px;
+  }
+  
+  .tile {
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+  }
+  
+  .tile h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-size: 1.4em;
+  }
+  
+  /* Table Styles */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  th,
+  td {
+    padding: 8px 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+  
+  /* Loading Indicator */
+  .loading-indicator {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    margin-top: 10px;
+  }
+  
+  /* Placeholder Styles */
+  .placeholder-tile {
+    text-align: center;
+    font-style: italic;
+    color: #777;
+    padding: 20px;
+  }
+  
+  /* Chart Styles - Add some basic spacing */
+  canvas {
+    max-width: 100%;
+    /* Ensure charts don't overflow */
+    margin: 10px auto;
+    /* Center the chart */
+    display: block;
+    /* Required for margin auto to work correctly */
+  }
+  
+  
+  /* Media Queries for smaller screens */
+  @media (max-width: 768px) {
+    .grid-container {
+      grid-template-columns: 1fr;
+      /* One column on smaller screens */
+    }
+  }
+  
+  /* Header Content Styling (for logo and title) */
+  .header-content {
+    display: flex;
+    align-items: center;
+    /* Vertically align logo and title */
+    justify-content: center;
+    /* Center horizontally */
+  }
+  
+  .logo {
+    width: 250px;
+    /* Adjust as needed */
+    height: 50px;
+    /* Adjust as needed */
+    margin-right: 10px;
+    /* Spacing between logo and title */
+  }

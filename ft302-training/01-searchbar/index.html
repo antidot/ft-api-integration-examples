@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" href="./styles.css">
+        <script src="./script.js"></script>
+	<link rel="shortcut icon" type="image/png" href="https://discover.fluidtopics.com/public/favicon-96x96.png">
+	<title>FT ITG - Search bar</title>
+    </head>
+    <body>
+        <div style="color:darkgrey;margin:3px 3px 3px 10px;">Search bar</div>
+        <header class="search-section">
+            <img src="./img/ft-logo.png">
+            <form class="search-wrapper" id="search-form" action="javascript:;"><!--We use the form to catch the submit event only, hence no specific target needed (action="javascript:void(0);" == action="javascript:;")-->
+                <input type="search" id="search-input" autocomplete="off" autocapitalize="off" autocorrect="off" placeholder="Search here (e.g. Fluid Topics)" list="json-datalist">
+                <button type="submit">Search</button>
+                <!--Here take place the suggestions-->
+                <datalist id="json-datalist"></datalist>
+            </form>
+        </header>
+    </body>
+</html>
+
+    
